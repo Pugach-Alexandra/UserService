@@ -1,7 +1,5 @@
 package com.example.Mafia.service;
 
-
-
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
