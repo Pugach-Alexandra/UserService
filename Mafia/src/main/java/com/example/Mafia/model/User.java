@@ -13,16 +13,17 @@ import org.springframework.data.cassandra.core.mapping.Table;
 public class User {
     @Id
     @PrimaryKeyColumn(
-            name = "user_id",
-            ordinal = 1,
+            name = "userid",
+            ordinal = 0,
             type = PrimaryKeyType.PARTITIONED)
     private Long userId;
-    @Column(value="band_id")
-    private Long bandId;
-    @Column(value="task_id")
-    private Long taskId;
     @Column(value="name")
     private String name;
+    @Column(value="bandid")
+    private Long bandId;
+    @Column(value="taskid")
+    private Long taskId;
+
 
 
 }

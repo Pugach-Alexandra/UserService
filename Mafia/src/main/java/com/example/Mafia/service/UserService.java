@@ -1,7 +1,5 @@
 package com.example.Mafia.service;
 
-
-
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +31,13 @@ private final UserRepository userRepository;
 
     public User updateById(Long userId, User user) {
         Optional<User> updatableUser = userRepository.findById(userId);
-        User newUser = null;
+        User newUser = updatableUser.get();
         if (updatableUser.isPresent()) {
-            newUser = updatableUser.get();
+            if(user.getName() !=null)
             newUser.setName(user.getName());
+            if(user.getBandId() !=null)
             newUser.setBandId(user.getBandId());
+            if(user.getTaskId()!=null)
             newUser.setTaskId(user.getTaskId());
         }
         return userRepository.save(newUser);
