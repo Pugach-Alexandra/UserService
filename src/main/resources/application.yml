@@ -18,4 +18,4 @@ spring.data.cassandra:
     init-query-timeout: 10s
 
 datastax.astra:
-  secure-connect-bundle: "C:\Users\alexp\UserService\secure-connect-users.zip"
+  secure-connect-bundle: C:\Users\alexp\UserService\secure-connect-users.zip
