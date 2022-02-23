@@ -1,1 +1,0 @@
-web: java -Dserver.port=8081 -jar target/Mafia-0.0.1-SNAPSHOT.jar
