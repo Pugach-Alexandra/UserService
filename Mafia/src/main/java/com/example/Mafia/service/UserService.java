@@ -37,7 +37,6 @@ private final UserRepository userRepository;
             newUser.setName(user.getName());
             if(user.getBandId() !=null)
             newUser.setBandId(user.getBandId());
-            if(user.getTaskId()!=null)
             newUser.setTaskId(user.getTaskId());
         }
         return userRepository.save(newUser);
