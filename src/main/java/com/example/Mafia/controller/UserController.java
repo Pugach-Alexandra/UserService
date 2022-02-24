@@ -15,6 +15,7 @@ import java.util.Optional;
 import static org.springframework.http.ResponseEntity.*;
 
 @Controller
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -24,31 +25,31 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user){
         logger.info("Creating a User");
         return ok(userService.createUser(user));
     }
 
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<User>> findAll(){
         logger.info("Getting all Users");
         return ok(userService.findAll());
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id){
         logger.info("Getting the User with id: " +id);
         return ok(userService.findById(id));
     }
 
-    @PatchMapping("/users/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user){
         logger.info("Updating the User with id: " +id);
         return ok(userService.updateById(id, user));
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Long id){
         logger.info("Deleting the User with id: " +id);
         userService.deleteById(id);

@@ -10,7 +10,8 @@ import java.nio.file.Path;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ConnectDatabase.class)
-public class MafiaApplication {
+public class
+MafiaApplication {
 
 	public static void main(String[] args) {
 
