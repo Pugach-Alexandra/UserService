@@ -37,6 +37,7 @@ private final UserRepository userRepository;
             newUser.setName(user.getName());
             if(user.getBandId() !=null)
             newUser.setBandId(user.getBandId());
+            if(user.getTaskId() !=null)
             newUser.setTaskId(user.getTaskId());
         }
         return userRepository.save(newUser);
@@ -46,4 +47,12 @@ private final UserRepository userRepository;
         userRepository.deleteById(userId);
     }
 
+    public Object updateBandId(Long userId, Long bandId) {
+        Optional<User> updatableUser = userRepository.findById(userId);
+        User newUser = updatableUser.get();
+        if (updatableUser.isPresent()) {
+            newUser.setBandId(bandId);
+        }
+        return userRepository.save(newUser);
+    }
 }

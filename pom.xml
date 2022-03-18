@@ -60,7 +60,12 @@
 			<artifactId>java-driver-core</artifactId>
 			<version>4.13.0</version>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.squareup.retrofit</groupId>
+			<artifactId>retrofit</artifactId>
+			<version>1.8.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<defaultGoal>install</defaultGoal>
