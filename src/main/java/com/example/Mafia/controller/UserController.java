@@ -23,6 +23,10 @@ public class UserController {
 
     private final UserService userService;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
@@ -30,40 +34,50 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user){
+
         logger.info("Creating a User");
         return ok(userService.createUser(user));
+
     }
 
     @GetMapping
     public ResponseEntity<List<User>> findAll(){
+
         logger.info("Getting all Users");
         return ok(userService.findAll());
+
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id){
+
         logger.info("Getting the User with id: " +id);
         return ok(userService.findById(id));
+
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user){
+
         logger.info("Updating the User with id: " +id);
         return ok(userService.updateById(id, user));
+
     }
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Long id){
+
         logger.info("Deleting the User with id: " + id);
         userService.deleteById(id);
+
     }
 
     @PatchMapping("/{id}/addBand")
     public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id, @RequestBody String bandName){
-        RestTemplate restTemplate = new RestTemplate();
+
         String baseUrl = "https://heroku-bands.herokuapp.com/bands?bandName=" + bandName;
         ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
-        logger.info("Updating the Users band with id: " +id + "to: " +  bandName);
+        logger.info("Updating the Users band with id: " +id + " to: " +  bandName);
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -72,14 +86,15 @@ public class UserController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
     }
 
     @PatchMapping("/{id}/addTask")
     public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, @RequestBody String taskName){
-        RestTemplate restTemplate = new RestTemplate();
+
         String baseUrl = "https://test-herokus1.herokuapp.com/tasks?taskName=" + taskName;
         ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
-        logger.info("Updating the Users task with id: " +id + "to: " +  taskName);
+        logger.info("Updating the Users task with id: " +id + " to: " +  taskName);
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -88,6 +103,7 @@ public class UserController {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
     }
 
 }

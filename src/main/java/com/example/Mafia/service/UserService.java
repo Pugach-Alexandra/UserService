@@ -3,13 +3,14 @@ package com.example.Mafia.service;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.cassandra.repository.CassandraRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService  {
 
 private final UserRepository userRepository;
     @Autowired
