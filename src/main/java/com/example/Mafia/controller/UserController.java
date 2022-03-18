@@ -62,14 +62,29 @@ public class UserController {
     public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id, @RequestBody String bandName){
         RestTemplate restTemplate = new RestTemplate();
         String baseUrl = "https://heroku-bands.herokuapp.com/bands?bandName=" + bandName;
-        ResponseEntity<String> response = null;
-        response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
-        logger.info("Updating the User with id: " +id);
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
+        logger.info("Updating the Users band with id: " +id + "to: " +  bandName);
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
             Long bandId =  Long.valueOf(jsonObject.getString("id"));
             return ok(userService.updateBandId(id, bandId));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PatchMapping("/{id}/addTask")
+    public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, @RequestBody String taskName){
+        RestTemplate restTemplate = new RestTemplate();
+        String baseUrl = "https://test-herokus1.herokuapp.com/tasks?taskName=" + taskName;
+        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
+        logger.info("Updating the Users task with id: " +id + "to: " +  taskName);
+        try {
+            String jsonStr = new String((response.getBody()).getBytes());
+            JSONObject jsonObject = new JSONObject(jsonStr);
+            Long taskId =  Long.valueOf(jsonObject.getString("id"));
+            return ok(userService.updateTaskId(id, taskId));
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }

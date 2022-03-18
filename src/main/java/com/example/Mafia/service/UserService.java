@@ -55,4 +55,13 @@ private final UserRepository userRepository;
         }
         return userRepository.save(newUser);
     }
+
+    public Object updateTaskId(Long userId, Long taskId) {
+        Optional<User> updatableUser = userRepository.findById(userId);
+        User newUser = updatableUser.get();
+        if (updatableUser.isPresent()) {
+            newUser.setTaskId(taskId);
+        }
+        return userRepository.save(newUser);
+    }
 }
