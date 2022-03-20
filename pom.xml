@@ -60,11 +60,6 @@
 			<artifactId>java-driver-core</artifactId>
 			<version>4.13.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.squareup.retrofit2</groupId>
-			<artifactId>retrofit</artifactId>
-			<version>2.1.0</version>
-		</dependency>
 	</dependencies>
 
 	<build>
