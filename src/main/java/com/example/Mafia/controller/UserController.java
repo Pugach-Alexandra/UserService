@@ -1,5 +1,6 @@
 package com.example.Mafia.controller;
 
+
 import com.example.Mafia.model.User;
 import com.example.Mafia.service.UserService;
 import org.slf4j.Logger;
@@ -75,34 +76,16 @@ public class UserController {
     @PatchMapping("/{id}/addBand")
     public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id, @RequestBody String bandName){
 
-        String baseUrl = "https://heroku-bands.herokuapp.com/bands?bandName=" + bandName;
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
         logger.info("Updating the Users band with id: " +id + " to: " +  bandName);
-        try {
-            String jsonStr = new String((response.getBody()).getBytes());
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            Long bandId =  Long.valueOf(jsonObject.getString("id"));
-            return ok(userService.updateBandId(id, bandId));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        return ok(userService.updateBandId(id, bandName));
 
     }
 
     @PatchMapping("/{id}/addTask")
     public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, @RequestBody String taskName){
 
-        String baseUrl = "https://test-herokus1.herokuapp.com/tasks?taskName=" + taskName;
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
         logger.info("Updating the Users task with id: " +id + " to: " +  taskName);
-        try {
-            String jsonStr = new String((response.getBody()).getBytes());
-            JSONObject jsonObject = new JSONObject(jsonStr);
-            Long taskId =  Long.valueOf(jsonObject.getString("id"));
-            return ok(userService.updateTaskId(id, taskId));
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        return ok(userService.updateTaskId(id, taskName));
 
     }
 
