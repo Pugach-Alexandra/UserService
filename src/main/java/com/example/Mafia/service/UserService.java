@@ -1,6 +1,7 @@
 package com.example.Mafia.service;
 
 
+import com.example.Mafia.configuration.ServicesConnection;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +20,17 @@ import java.util.Optional;
 public class UserService  {
 
 private final UserRepository userRepository;
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+private final RestTemplate restTemplate;
+private final ServicesConnection connection;
 
     @Autowired
-    private RestTemplate restTemplate;
+    public UserService(UserRepository userRepository, RestTemplate restTemplate, ServicesConnection connection) {
+        this.userRepository = userRepository;
+        this.restTemplate = restTemplate;
+        this.connection = connection;
+    }
+
+
 
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
@@ -59,8 +65,7 @@ private final UserRepository userRepository;
     public Object updateBandId(Long userId, String bandName) {
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
-        String baseUrl = "https://heroku-bands.herokuapp.com/bands?bandName=" + bandName;
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlBands() + bandName, HttpMethod.GET, null, String.class);
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -76,8 +81,7 @@ private final UserRepository userRepository;
     public Object updateTaskId(Long userId, String taskName) {
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
-        String baseUrl = "https://test-herokus1.herokuapp.com/tasks?taskName=" + taskName;
-        ResponseEntity<String> response = restTemplate.exchange(baseUrl, HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlTasks() + taskName, HttpMethod.GET, null, String.class);
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
