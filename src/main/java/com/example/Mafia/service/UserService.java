@@ -30,8 +30,6 @@ private final ServicesConnection connection;
         this.connection = connection;
     }
 
-
-
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
     }
@@ -45,8 +43,10 @@ private final ServicesConnection connection;
     }
 
     public User updateById(Long userId, User user) {
+
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
+
         if (updatableUser.isPresent()) {
             if(user.getName() !=null)
             newUser.setName(user.getName());
@@ -56,16 +56,19 @@ private final ServicesConnection connection;
             newUser.setTaskId(user.getTaskId());
         }
         return userRepository.save(newUser);
+
     }
 
     public void deleteById(Long userId){
         userRepository.deleteById(userId);
     }
 
-    public Object updateBandId(Long userId, String bandName) {
+    public User updateBandId(Long userId, String bandName) {
+
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
         ResponseEntity<String> response = restTemplate.exchange(connection.getUrlBands() + bandName, HttpMethod.GET, null, String.class);
+
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -78,10 +81,12 @@ private final ServicesConnection connection;
 
     }
 
-    public Object updateTaskId(Long userId, String taskName) {
+    public User updateTaskId(Long userId, String taskName) {
+
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
         ResponseEntity<String> response = restTemplate.exchange(connection.getUrlTasks() + taskName, HttpMethod.GET, null, String.class);
+
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
@@ -91,5 +96,7 @@ private final ServicesConnection connection;
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
+
     }
+
 }
