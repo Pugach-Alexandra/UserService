@@ -1,4 +1,4 @@
-package com.example.Mafia;
+package com.example.Mafia.configuration;
 
 import java.io.File;
 import lombok.Getter;

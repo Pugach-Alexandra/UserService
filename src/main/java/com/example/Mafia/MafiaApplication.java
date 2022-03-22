@@ -1,5 +1,6 @@
 package com.example.Mafia;
 
+import com.example.Mafia.configuration.ConnectDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -12,11 +13,12 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.file.Path;
 
 @SpringBootApplication
-@EnableConfigurationProperties(ConnectDatabase.class)
+@EnableConfigurationProperties({ConnectDatabase.class})
 public class
 MafiaApplication {
 
 	public static void main(String[] args) {
+
 		final Logger LOGGER = LoggerFactory.getLogger(MafiaApplication.class);
 		SpringApplication.run(MafiaApplication.class, args);
 

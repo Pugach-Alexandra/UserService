@@ -4,6 +4,7 @@ package com.example.Mafia.service;
 import com.example.Mafia.configuration.ServicesConnection;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -59,8 +60,15 @@ private final ServicesConnection connection;
 
     }
 
-    public void deleteById(Long userId){
-        userRepository.deleteById(userId);
+    public ResponseEntity<Void> deleteById(Long userId){
+
+        try {
+            userRepository.deleteById(userId);
+        return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     public User updateBandId(Long userId, String bandName) {

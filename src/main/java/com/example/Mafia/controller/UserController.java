@@ -60,10 +60,12 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
 
-        logger.info("Deleting the User with id: " + id);
-        userService.deleteById(id);
+            logger.info("Deleting the User with id: " + id);
+            return userService.deleteById(id); //ResponseEntity.noContent().build();
+        /*logger.info("Deleting the User with id: " + id);
+        userService.deleteById(id);*/
 
     }
 
