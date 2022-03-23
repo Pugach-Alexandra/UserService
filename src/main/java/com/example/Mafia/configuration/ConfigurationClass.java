@@ -21,23 +21,25 @@ public class ConfigurationClass {
         return builder -> builder.withCloudSecureConnectBundle(bundle);
 
     }
-    @Bean
+
+    /*@Bean
     public RestTemplate getRestTemplate() {
 
         return new RestTemplate();
 
-    }
+    }*/
 
-    /*@Bean
+    @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
                 .setConnectTimeout(Duration.ofMillis(60000))
                 .setReadTimeout(Duration.ofMillis(60000))
                 .build();
-    }*/
-    /*@Bean
+    }
+
+    @Bean
     public HttpComponentsClientHttpRequestFactory factory(){
         return new HttpComponentsClientHttpRequestFactory();
-    }*/
+    }
 
 }

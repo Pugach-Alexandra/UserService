@@ -26,9 +26,9 @@ private final RestTemplate restTemplate;
 private final ServicesConnection connection;
 
     @Autowired
-    public UserService(UserRepository userRepository, RestTemplate restTemplate, ServicesConnection connection) {
+    public UserService(UserRepository userRepository, HttpComponentsClientHttpRequestFactory factory, ServicesConnection connection) {
         this.userRepository = userRepository;
-        this.restTemplate = restTemplate;
+        this.restTemplate = new RestTemplate(factory);
         this.connection = connection;
     }
 
