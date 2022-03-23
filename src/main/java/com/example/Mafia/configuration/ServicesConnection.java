@@ -1,11 +1,10 @@
 package com.example.Mafia.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
 @ConfigurationProperties(prefix = "users")
 public class ServicesConnection {
+
     private String urlTasks;
     private String urlBands;
 
@@ -24,4 +23,5 @@ public class ServicesConnection {
     public void setUrlBands(String urlBands) {
         this.urlBands = urlBands;
     }
+
 }

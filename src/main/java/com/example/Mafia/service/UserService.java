@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
@@ -48,14 +49,13 @@ private final ServicesConnection connection;
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
 
-        if (updatableUser.isPresent()) {
             if(user.getName() !=null)
             newUser.setName(user.getName());
             if(user.getBandId() !=null)
             newUser.setBandId(user.getBandId());
             if(user.getTaskId() !=null)
             newUser.setTaskId(user.getTaskId());
-        }
+
         return userRepository.save(newUser);
 
     }
