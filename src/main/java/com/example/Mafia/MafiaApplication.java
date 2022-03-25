@@ -1,6 +1,5 @@
 package com.example.Mafia;
 
-import com.example.Mafia.configuration.ConfigurationClass;
 import com.example.Mafia.configuration.ConnectDatabase;
 import com.example.Mafia.configuration.ServicesConnection;
 import org.springframework.boot.SpringApplication;
