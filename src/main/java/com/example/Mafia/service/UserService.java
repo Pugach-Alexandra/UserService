@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -41,6 +42,14 @@ private final ServicesConnection connection;
     }
 
     public User createUser(User user){
+        List<User> list = findAll();
+        Long number;
+        try {
+            number = list.stream().max((o1, o2) -> (int) (o1.getUserId() - o2.getUserId())).get().getUserId();
+        } catch (NoSuchElementException e) {
+            number = Long.valueOf(99);
+        }
+        user.setUserId(++number);
         return userRepository.save(user);
     }
 
