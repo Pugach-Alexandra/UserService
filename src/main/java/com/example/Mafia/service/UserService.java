@@ -5,9 +5,10 @@ import com.example.Mafia.configuration.ServicesConnection;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
