@@ -1,4 +1,4 @@
-package com.example.Mafia;
+package com.example.Mafia.configuration;
 
 import java.io.File;
 import lombok.Getter;
@@ -11,4 +11,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ConnectDatabase {
 
     private File secureConnectBundle;
+
 }
