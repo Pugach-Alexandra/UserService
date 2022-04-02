@@ -8,7 +8,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -33,6 +35,9 @@ private final ServicesConnection connection;
         this.restTemplate = new RestTemplate(factory);
         this.connection = connection;
     }
+
+    @Value("${my.app.secret}")
+    private String jwtSecret;
 
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
@@ -115,6 +120,34 @@ private final ServicesConnection connection;
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean isTokenValidBoss(HttpServletRequest request){
+        try {
+            String headerAuth = request.getHeader("Authorization");
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                return s[2].contains("ROLE_BOSS");
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean isTokenValidBossAndUser(HttpServletRequest request) {
+        try {
+            String headerAuth = request.getHeader("Authorization");
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_USER");
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            return false;
+        }
     }
 
 }
