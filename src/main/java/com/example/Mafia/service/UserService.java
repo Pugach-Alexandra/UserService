@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -125,8 +126,10 @@ private final ServicesConnection connection;
     public boolean isTokenValidBoss(HttpServletRequest request){
         try {
             String headerAuth = request.getHeader("Authorization");
+            System.out.println(headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                System.out.println(Arrays.toString(s));
                 return s[2].contains("ROLE_BOSS");
             } else {
                 return false;

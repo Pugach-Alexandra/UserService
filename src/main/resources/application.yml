@@ -24,3 +24,7 @@ datastax.astra:
 users:
     url-tasks: "https://test-herokus1.herokuapp.com/tasks?taskName="
     url-bands: "https://heroku-bands.herokuapp.com/bands?bandName="
+
+my:
+  app:
+    secret: "AndrewReshetnyakAAAAAAAAAAAAAAAAaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"

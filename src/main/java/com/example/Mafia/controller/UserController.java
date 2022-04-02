@@ -97,7 +97,7 @@ public class UserController {
         }
         if (errors.hasErrors()) {
             logger.error("Not valid user");
-            //throw new ApiRequestExceptions("Task is not valid");
+            //throw new ApiRequestExceptions("Band is not valid");
         }
         logger.info("Updating the Users band with id: " +id + " to: " +  bandName);
         return ok(userService.updateBandId(id, bandName));
