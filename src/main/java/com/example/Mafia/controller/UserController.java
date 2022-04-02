@@ -42,7 +42,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(@RequestBody HttpServletRequest request){
+    public ResponseEntity<List<User>> findAll(HttpServletRequest request){
 
         if (!userService.isTokenValidBoss(request)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, @RequestBody HttpServletRequest request){
+    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, HttpServletRequest request){
 
         if (!userService.isTokenValidBossAndUser(request)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
