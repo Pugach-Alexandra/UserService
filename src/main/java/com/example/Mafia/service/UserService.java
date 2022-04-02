@@ -2,11 +2,14 @@ package com.example.Mafia.service;
 
 
 import com.example.Mafia.configuration.ServicesConnection;
+import com.example.Mafia.controller.UserController;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,6 +39,8 @@ private final ServicesConnection connection;
         this.restTemplate = new RestTemplate(factory);
         this.connection = connection;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Value("${my.app.secret}")
     private String jwtSecret;
@@ -126,10 +131,10 @@ private final ServicesConnection connection;
     public boolean isTokenValidBoss(HttpServletRequest request){
         try {
             String headerAuth = request.getHeader("Authorization");
-            System.out.println(headerAuth);
+            logger.info(headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                System.out.println(Arrays.toString(s));
+                logger.info(Arrays.toString(s));
                 return s[2].contains("ROLE_BOSS");
             } else {
                 return false;
