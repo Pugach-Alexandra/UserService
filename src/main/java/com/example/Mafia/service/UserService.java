@@ -134,10 +134,10 @@ private final ServicesConnection connection;
     public boolean isTokenValidUser(HttpServletRequest request){
         try {
             String headerAuth = request.getHeader("Authorization");
-            logger.info(headerAuth);
+            logger.info(jwtUserSecret + " " + headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
-                String[] s = Jwts.parser().setSigningKey(jwtUserSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                logger.info(Arrays.toString(s));
+                String s = Jwts.parser().setSigningKey(jwtUserSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject();
+                logger.info("RESULT:{}", s);
                 return true;
             } else {
                 return false;
