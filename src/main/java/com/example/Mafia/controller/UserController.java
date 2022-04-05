@@ -34,7 +34,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@RequestBody User user, HttpServletRequest request){
+
+        if (!userService.isTokenValidUser(request)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
 
         logger.info("Creating a User");
         return ok(userService.createUser(user));

@@ -45,6 +45,9 @@ private final ServicesConnection connection;
     @Value("${my.app.secret}")
     private String jwtSecret;
 
+    @Value("${user.app.secret}")
+    private String jwtUserSecret;
+
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
     }
@@ -126,6 +129,22 @@ private final ServicesConnection connection;
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean isTokenValidUser(HttpServletRequest request){
+        try {
+            String headerAuth = request.getHeader("Authorization");
+            logger.info(headerAuth);
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+                String[] s = Jwts.parser().setSigningKey(jwtUserSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                logger.info(Arrays.toString(s));
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e){
+            return false;
+        }
     }
 
     public boolean isTokenValidBoss(HttpServletRequest request){
