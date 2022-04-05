@@ -13,11 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -134,7 +136,7 @@ private final ServicesConnection connection;
     public boolean isTokenValidUser(HttpServletRequest request){
         try {
             String headerAuth = request.getHeader("Authorization");
-            logger.info(jwtUserSecret + " " + headerAuth);
+            logger.info(headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String s = Jwts.parser().setSigningKey(jwtUserSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject();
                 logger.info("RESULT:{}", s);
@@ -148,33 +150,36 @@ private final ServicesConnection connection;
     }
 
     public boolean isTokenValidBoss(HttpServletRequest request){
-        try {
+
             String headerAuth = request.getHeader("Authorization");
             logger.info(headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
                 logger.info(Arrays.toString(s));
-                return s[2].contains("ROLE_BOSS");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return true;
+                } else {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
             } else {
-                return false;
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e){
-            return false;
-        }
     }
 
-    public boolean isTokenValidBossAndUser(HttpServletRequest request) {
-        try {
+    public boolean isTokenValidBossAndUser(Long userId, HttpServletRequest request) {
             String headerAuth = request.getHeader("Authorization");
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_USER");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return true;
+                }else if(s[2].contains("ROLE_USER") && (String.valueOf(userId) == s[0])){
+                    return true;
+                } else {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
             } else {
-                return false;
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e){
-            return false;
-        }
     }
 
 }
