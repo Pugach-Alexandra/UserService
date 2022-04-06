@@ -81,16 +81,16 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/addBand")
-    public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id, @RequestBody String bandName, HttpServletRequest request){
+    public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id,  @RequestBody String bandName, HttpServletRequest request){
 
         userService.isTokenValidBoss(request);
         logger.info("Updating the Users band with id: " +id + " to: " +  bandName);
-        return ok(userService.updateBandId(id, bandName));
+        return ok(userService.updateBandId(id, bandName, request));
 
     }
 
     @PatchMapping("/{id}/addTask")
-    public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, @RequestBody String taskName, HttpServletRequest request){
+    public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, HttpServletRequest request, @RequestBody String taskName ){
 
         userService.isTokenValidBoss(request);
         logger.info("Updating the Users task with id: " +id + " to: " +  taskName);
