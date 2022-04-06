@@ -94,7 +94,7 @@ public class UserController {
 
         userService.isTokenValidBoss(request);
         logger.info("Updating the Users task with id: " +id + " to: " +  taskName);
-        return ok(userService.updateTaskId(id, taskName));
+        return ok(userService.updateTaskId(id, taskName, request));
 
     }
 

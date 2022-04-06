@@ -2,6 +2,7 @@ package com.example.Mafia;
 
 import com.example.Mafia.configuration.ConnectDatabase;
 import com.example.Mafia.configuration.ServicesConnection;
+import com.example.Mafia.configuration.SwaggerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

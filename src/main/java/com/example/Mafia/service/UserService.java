@@ -113,11 +113,11 @@ private final ServicesConnection connection;
 
     }
 
-    public User updateTaskId(Long userId, String taskName) {
+    public User updateTaskId(Long userId, String taskName,  HttpServletRequest request) {
 
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
-        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlTasks() + taskName, HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlTasks() + taskName, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
 
         try {
             String jsonStr = new String((response.getBody()).getBytes());
@@ -150,10 +150,10 @@ private final ServicesConnection connection;
     public void isTokenValidBoss(HttpServletRequest request){
 
             String headerAuth = request.getHeader("Authorization");
-            logger.info("Checking for the presence of a token");
+            logger.info(headerAuth);
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                logger.info("jwtToken received");
+                logger.info("RESULT {} ", s);
                 if (s[2].contains("ROLE_BOSS")) {
                     return;
                 } else {
