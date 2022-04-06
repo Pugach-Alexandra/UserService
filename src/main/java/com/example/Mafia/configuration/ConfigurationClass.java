@@ -5,8 +5,6 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.file.Path;
@@ -23,13 +21,6 @@ public class ConfigurationClass {
 
     }
 
-    /*@Bean
-    public RestTemplate getRestTemplate() {
-
-        return new RestTemplate();
-
-    }*/
-
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder
@@ -41,11 +32,6 @@ public class ConfigurationClass {
     @Bean
     public HttpComponentsClientHttpRequestFactory factory(){
         return new HttpComponentsClientHttpRequestFactory();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
     }
 
 }

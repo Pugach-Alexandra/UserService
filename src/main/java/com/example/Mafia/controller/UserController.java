@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -34,7 +33,11 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@RequestBody User user, HttpServletRequest request){
+
+        if (!userService.isTokenValidUser(request)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
 
         logger.info("Creating a User");
         return ok(userService.createUser(user));
@@ -42,24 +45,18 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> findAll(@RequestBody HttpServletRequest request){
+    public ResponseEntity<List<User>> findAll(HttpServletRequest request){
 
-        if (!userService.isTokenValidBoss(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
+        userService.isTokenValidBoss(request);
         logger.info("Getting all Users");
         return ok(userService.findAll());
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, @RequestBody HttpServletRequest request){
+    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, HttpServletRequest request){
 
-        if (!userService.isTokenValidBossAndUser(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
+        userService.isTokenValidBossAndUser(id, request);
         logger.info("Getting the User with id: " +id);
         return ok(userService.findById(id));
 
@@ -68,10 +65,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable("id") Long id, @RequestBody User user, HttpServletRequest request){
 
-        if (!userService.isTokenValidBossAndUser(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
+        userService.isTokenValidBossAndUser(id, request);
         logger.info("Updating the User with id: " +id);
         return ok(userService.updateById(id, user));
 
@@ -80,40 +74,25 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, @RequestBody HttpServletRequest request){
 
-        if (!userService.isTokenValidBossAndUser(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
+        userService.isTokenValidBossAndUser(id, request);
         logger.info("Deleting the User with id: " + id);
         return userService.deleteById(id);
 
     }
 
     @PatchMapping("/{id}/addBand")
-    public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id, @RequestBody String bandName, Errors errors, HttpServletRequest request){
+    public ResponseEntity<Object> updateUsersBand(@PathVariable("id") Long id,  @RequestBody String bandName, HttpServletRequest request){
 
-        if (!userService.isTokenValidBoss(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        if (errors.hasErrors()) {
-            logger.error("Not valid user");
-            //throw new ApiRequestExceptions("Task is not valid");
-        }
+        userService.isTokenValidBoss(request);
         logger.info("Updating the Users band with id: " +id + " to: " +  bandName);
-        return ok(userService.updateBandId(id, bandName));
+        return ok(userService.updateBandId(id, bandName, request));
 
     }
 
     @PatchMapping("/{id}/addTask")
-    public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, @RequestBody String taskName, Errors errors, HttpServletRequest request){
+    public ResponseEntity<Object> updateUsersTask(@PathVariable("id") Long id, HttpServletRequest request, @RequestBody String taskName ){
 
-        if (!userService.isTokenValidBoss(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        if (errors.hasErrors()) {
-            logger.error("Not valid user");
-            //throw new ApiRequestExceptions("Task is not valid");
-        }
+        userService.isTokenValidBoss(request);
         logger.info("Updating the Users task with id: " +id + " to: " +  taskName);
         return ok(userService.updateTaskId(id, taskName));
 

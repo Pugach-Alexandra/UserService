@@ -2,25 +2,29 @@ package com.example.Mafia.service;
 
 
 import com.example.Mafia.configuration.ServicesConnection;
+import com.example.Mafia.controller.UserController;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+
 
 @Service
 public class UserService  {
@@ -36,8 +40,13 @@ private final ServicesConnection connection;
         this.connection = connection;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Value("${my.app.secret}")
     private String jwtSecret;
+
+    @Value("${user.app.secret}")
+    private String jwtUserSecret;
 
     public Optional<User> findById(Long userId){
         return userRepository.findById(userId);
@@ -86,16 +95,16 @@ private final ServicesConnection connection;
 
     }
 
-    public User updateBandId(Long userId, String bandName) {
+    public User updateBandId(Long userId, String bandName,  HttpServletRequest request) {
 
         Optional<User> updatableUser = userRepository.findById(userId);
         User newUser = updatableUser.get();
-        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlBands() + bandName, HttpMethod.GET, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(connection.getUrlBands() + bandName, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
 
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
-            Long bandId =  Long.valueOf(jsonObject.getString("id"));
+            Long bandId = Long.valueOf(String.valueOf(jsonObject.get("id")));
             newUser.setBandId(bandId);
             return userRepository.save(newUser);
         } catch (JSONException e) {
@@ -113,7 +122,7 @@ private final ServicesConnection connection;
         try {
             String jsonStr = new String((response.getBody()).getBytes());
             JSONObject jsonObject = new JSONObject(jsonStr);
-            Long taskId =  Long.valueOf(jsonObject.getString("id"));
+            Long taskId =  Long.valueOf(String.valueOf(jsonObject.get("id")));
             newUser.setTaskId(taskId);
             return userRepository.save(newUser);
         } catch (JSONException e) {
@@ -122,12 +131,14 @@ private final ServicesConnection connection;
 
     }
 
-    public boolean isTokenValidBoss(HttpServletRequest request){
+    public boolean isTokenValidUser(HttpServletRequest request){
         try {
             String headerAuth = request.getHeader("Authorization");
+            logger.info("Checking for the presence of a token");
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
-                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                return s[2].contains("ROLE_BOSS");
+                String s = Jwts.parser().setSigningKey(jwtUserSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject();
+                logger.info("jwtToken received");
+                return true;
             } else {
                 return false;
             }
@@ -136,18 +147,44 @@ private final ServicesConnection connection;
         }
     }
 
-    public boolean isTokenValidBossAndUser(HttpServletRequest request) {
-        try {
+    public void isTokenValidBoss(HttpServletRequest request){
+
             String headerAuth = request.getHeader("Authorization");
+            logger.info("Checking for the presence of a token");
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-                return s[2].contains("ROLE_BOSS") || s[2].contains("ROLE_USER");
+                logger.info("jwtToken received");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return;
+                } else {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
             } else {
-                return false;
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e){
-            return false;
-        }
     }
 
+    public void isTokenValidBossAndUser(Long userId, HttpServletRequest request) {
+            String headerAuth = request.getHeader("Authorization");
+            logger.info("Checking for the presence of a token");
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                logger.info("jwtToken received");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return;
+                }else if(s[2].contains("ROLE_USER") && s[0].contains(String.valueOf(userId))){
+                    return;
+                } else {
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
+    }
+
+    private HttpHeaders createHeaders(String jwt) {
+        return new HttpHeaders() {{
+            set("Authorization", jwt);
+        }};
+    }
 }
