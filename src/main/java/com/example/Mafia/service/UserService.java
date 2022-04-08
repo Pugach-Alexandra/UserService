@@ -56,8 +56,8 @@ private final ServicesConnection connection;
             return userRepository.findById(userId);
         } else {
 
-            logger.error("Error with status code: {}", HttpStatus.BAD_REQUEST);
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            logger.error("Error with status code: {}", HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         }
 
@@ -101,7 +101,7 @@ private final ServicesConnection connection;
 
         } catch (NoSuchElementException e) {
             logger.error("Error with exception: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
     }
@@ -151,7 +151,7 @@ private final ServicesConnection connection;
 
         } catch (NoSuchElementException e) {
             logger.error("Error with exception: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
     }
@@ -185,7 +185,7 @@ private final ServicesConnection connection;
 
         } catch (NoSuchElementException e) {
             logger.error("Error with exception: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
 
     }

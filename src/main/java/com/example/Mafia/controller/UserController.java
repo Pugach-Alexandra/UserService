@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
+
 import static org.springframework.http.ResponseEntity.*;
 
 @Controller
@@ -53,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, HttpServletRequest request){
+    public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request){
 
         userService.isTokenValidBossAndUser(id, request);
         logger.info("Getting the User with id: " +id);

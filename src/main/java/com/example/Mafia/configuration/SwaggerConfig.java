@@ -1,5 +1,6 @@
 package com.example.Mafia.configuration;
 
+import com.example.Mafia.model.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,12 +29,15 @@ public class SwaggerConfig {
     public Docket api() {
 
         return new Docket(DocumentationType.SWAGGER_2)
+                //.alternateTypeRules( AlternateTypeRules.newRule(
+                       // typeResolver.resolve(Collection.class, SecurityProperties.User.class), Ordered.HIGHEST_PRECEDENCE))
                 .securityContexts(Arrays.asList(securityContext()))
                 .securitySchemes(Arrays.asList(apiKey()))
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.example.Mafia.controller"))
                 .paths(PathSelectors.regex("/api.*"))
                 .build()
+                .directModelSubstitute(Object.class, java.util.Optional.class)
                 .apiInfo(metaData());
     }
     private ApiInfo metaData() {
