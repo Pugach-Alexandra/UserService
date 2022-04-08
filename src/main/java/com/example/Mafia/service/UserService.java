@@ -81,28 +81,29 @@ private final ServicesConnection connection;
         user.setUserId(++number);
         return userRepository.save(user);
 
+
     }
 
     public User updateById(Long userId, User user) {
 
-        try {
+            try {
 
-            Optional<User> updatableUser = userRepository.findById(userId);
-            User newUser = updatableUser.get();
+                Optional<User> updatableUser = userRepository.findById(userId);
+                User newUser = updatableUser.get();
 
-                if(user.getName() !=null)
-                    newUser.setName(user.getName());
-                if(user.getBandId() !=null)
-                    newUser.setBandId(user.getBandId());
-                if(user.getTaskId() !=null)
-                    newUser.setTaskId(user.getTaskId());
+                    if(user.getName() !=null)
+                        newUser.setName(user.getName());
+                    if(user.getBandId() !=null)
+                        newUser.setBandId(user.getBandId());
+                    if(user.getTaskId() !=null)
+                        newUser.setTaskId(user.getTaskId());
 
-            return userRepository.save(newUser);
+                return userRepository.save(newUser);
 
-        } catch (NoSuchElementException e) {
-            logger.error("Error with exception: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+            } catch (NoSuchElementException e) {
+                logger.error("Error with exception: {}", e.getMessage());
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
 
     }
 
@@ -215,22 +216,29 @@ private final ServicesConnection connection;
 
     public void isTokenValidBoss(HttpServletRequest request){
 
-        String headerAuth = request.getHeader("Authorization");
-        logger.info("Checking for the presence of a token");
+            String headerAuth = request.getHeader("Authorization");
+            logger.info("Checking for the presence of a token");
 
-        if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+        try {
 
-            String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-            logger.info("jwtToken received");
-            if (s[2].contains("ROLE_BOSS")) {
-                return;
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+
+                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                logger.info("jwtToken received");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return;
+                } else {
+                    logger.error("Error with status code: {}", HttpStatus.FORBIDDEN);
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
+
             } else {
-                logger.error("Error with status code: {}", HttpStatus.FORBIDDEN);
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                logger.error("Error with status code: {}", HttpStatus.UNAUTHORIZED);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
 
-        } else {
-            logger.error("Error with status code: {}", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            logger.error("Error with exception: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
@@ -240,22 +248,26 @@ private final ServicesConnection connection;
 
         String headerAuth = request.getHeader("Authorization");
         logger.info("Checking for the presence of a token");
+        try {
+            if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
 
-        if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
+                String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
+                logger.info("jwtToken received");
+                if (s[2].contains("ROLE_BOSS")) {
+                    return;
+                }else if(s[2].contains("ROLE_USER") && s[0].contains(String.valueOf(userId))){
+                    return;
+                } else {
+                    logger.error("Error with status code: {}", HttpStatus.FORBIDDEN);
+                    throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                }
 
-            String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
-            logger.info("jwtToken received");
-            if (s[2].contains("ROLE_BOSS")) {
-                return;
-            }else if(s[2].contains("ROLE_USER") && s[0].contains(String.valueOf(userId))){
-                return;
             } else {
-                logger.error("Error with status code: {}", HttpStatus.FORBIDDEN);
-                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+                logger.error("Error with status code: {}", HttpStatus.UNAUTHORIZED);
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
-
-        } else {
-            logger.error("Error with status code: {}", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            logger.error("Error with exception: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
