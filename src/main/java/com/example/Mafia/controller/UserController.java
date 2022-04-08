@@ -1,6 +1,5 @@
 package com.example.Mafia.controller;
 
-
 import com.example.Mafia.model.User;
 import com.example.Mafia.service.UserService;
 import org.slf4j.Logger;
