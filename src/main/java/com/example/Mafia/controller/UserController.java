@@ -1,6 +1,5 @@
 package com.example.Mafia.controller;
 
-
 import com.example.Mafia.model.User;
 import com.example.Mafia.service.UserService;
 import org.slf4j.Logger;
@@ -16,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
+
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<User>> findById(@PathVariable("id") Long id, HttpServletRequest request){
+    public ResponseEntity<?> findById(@PathVariable("id") Long id, HttpServletRequest request){
 
         userService.isTokenValidBossAndUser(id, request);
         logger.info("Getting the User with id: " +id);
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, @RequestBody HttpServletRequest request){
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, HttpServletRequest request){
 
         userService.isTokenValidBossAndUser(id, request);
         logger.info("Deleting the User with id: " + id);
