@@ -4,6 +4,7 @@ package com.example.Mafia.service;
 import com.example.Mafia.configuration.ServicesConnection;
 import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
+import io.jsonwebtoken.security.SignatureException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -90,7 +92,8 @@ private final ServicesConnection connection;
 
                 Optional<User> updatableUser = userRepository.findById(userId);
                 User newUser = updatableUser.get();
-
+                    if(user.getUserId() !=null)
+                        newUser.setUserId(userId);
                     if(user.getName() !=null)
                         newUser.setName(user.getName());
                     if(user.getBandId() !=null)
@@ -135,19 +138,19 @@ private final ServicesConnection connection;
                 ResponseEntity<String> response = restTemplate.exchange(connection.getUrlBands() + bandName, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
 
                 try {
-                    String jsonStr = new String((response.getBody()).getBytes());
+                    String jsonStr = new String((Objects.requireNonNull(response.getBody())).getBytes());
                     JSONObject jsonObject = new JSONObject(jsonStr);
                     Long bandId = Long.valueOf(String.valueOf(jsonObject.get("id")));
                     newUser.setBandId(bandId);
                     return userRepository.save(newUser);
                 } catch (JSONException e) {
                     logger.error("Error with exception: {}", e.getMessage());
-                    throw new RuntimeException(e);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
 
             } catch (HttpClientErrorException e) {
                 logger.error("Error with status code: {}", e.getStatusCode());
-                throw new ResponseStatusException(e.getStatusCode());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
 
         } catch (NoSuchElementException e) {
@@ -169,19 +172,19 @@ private final ServicesConnection connection;
                 ResponseEntity<String> response = restTemplate.exchange(connection.getUrlTasks() + taskName, HttpMethod.GET, new HttpEntity<>(createHeaders(request.getHeader("Authorization"))), String.class);
 
                 try {
-                    String jsonStr = new String((response.getBody()).getBytes());
+                    String jsonStr = new String((Objects.requireNonNull(response.getBody())).getBytes());
                     JSONObject jsonObject = new JSONObject(jsonStr);
                     Long taskId =  Long.valueOf(String.valueOf(jsonObject.get("id")));
                     newUser.setTaskId(taskId);
                     return userRepository.save(newUser);
                 } catch (JSONException e) {
                     logger.error("Error with exception: {}", e.getMessage());
-                    throw new RuntimeException(e);
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
                 }
 
             } catch (HttpClientErrorException e) {
                 logger.error("Error with status code: {}", e.getStatusCode());
-                throw new ResponseStatusException(e.getStatusCode());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
             }
 
         } catch (NoSuchElementException e) {
@@ -207,7 +210,7 @@ private final ServicesConnection connection;
                 return false;
             }
 
-        } catch (Exception e){
+        } catch (SignatureException e){
             logger.error("Error with exception: {}", e.getMessage());
             return false;
         }
@@ -219,7 +222,7 @@ private final ServicesConnection connection;
             String headerAuth = request.getHeader("Authorization");
             logger.info("Checking for the presence of a token");
 
-        try {
+        try{
 
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
 
@@ -237,10 +240,11 @@ private final ServicesConnection connection;
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
 
-        } catch (Exception e){
+        } catch(SignatureException e){
             logger.error("Error with exception: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
+
 
     }
 
@@ -248,7 +252,9 @@ private final ServicesConnection connection;
 
         String headerAuth = request.getHeader("Authorization");
         logger.info("Checking for the presence of a token");
-        try {
+
+        try{
+
             if (headerAuth!=null && headerAuth.startsWith("Bearer ")) {
 
                 String[] s = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(headerAuth.substring(7)).getBody().getSubject().split(" ");
@@ -266,7 +272,8 @@ private final ServicesConnection connection;
                 logger.error("Error with status code: {}", HttpStatus.UNAUTHORIZED);
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             }
-        } catch (Exception e){
+
+        } catch(SignatureException e){
             logger.error("Error with exception: {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }

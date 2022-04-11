@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, @RequestBody HttpServletRequest request){
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id, HttpServletRequest request){
 
         userService.isTokenValidBossAndUser(id, request);
         logger.info("Deleting the User with id: " + id);
