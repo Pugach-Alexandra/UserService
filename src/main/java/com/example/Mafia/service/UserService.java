@@ -6,6 +6,7 @@ import com.example.Mafia.model.User;
 import com.example.Mafia.repository.UserRepository;
 import io.jsonwebtoken.security.SignatureException;
 import org.apache.velocity.exception.ResourceNotFoundException;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;

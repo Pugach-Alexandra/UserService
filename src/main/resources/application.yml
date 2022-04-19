@@ -1,7 +1,7 @@
 spring.application.name: spring-data-service
 
 server:
-  port: 8081
+  port: ${PORT:8081}
 
 management.server.port: 8082
 
@@ -19,7 +19,7 @@ spring.data.cassandra:
     init-query-timeout: 10s
 
 datastax.astra:
-  secure-connect-bundle: "secure-connect-users(1).zip"
+  secure-connect-bundle: "secure-connect.zip"
 
 users:
     url-tasks: "https://test-herokus1.herokuapp.com/tasks?taskName="
