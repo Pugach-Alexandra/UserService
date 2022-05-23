@@ -27,7 +27,7 @@ users:
 
 my:
   app:
-    secret: "AndrewReshetnyakAAAAAAAAAAAAAAAAaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    secret: "VThZdk5kVjVzb2tmRUFWQkdQbUxIdk1HTnVxNHNrallod29HWFB5Q2Y1MlhzcEQ1bTJKbnFONnl1TjBNQ1hxZjduCg=="
 
 user:
   app:
